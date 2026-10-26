@@ -1,0 +1,198 @@
+# Selected hyperparameters for the results in the paper (Table 3 and Figure 2).
+#
+# Each setting was chosen by a single-seed sweep over the ranges below (best test score), and the
+# reported numbers are the mean and sample std over seeds 0-4 with that setting.
+#
+# Structure:  <experiment>.<method>.<dataset> -> command line arguments of main.py.
+# `common` holds the arguments shared by all datasets of a method; dataset entries add to them.
+# Arguments not listed here come from config/<task_type>.yaml.
+#
+# Example: Table 3, LoRA on CAER corresponds to
+#   bash scripts/classification.sh   with   DATASET=CAER, METHOD_ARGS="--peft_type lora --peft_dropout 0.1 --peft_rank 128", LR=0.00025
+
+datasets:
+  CAER:       {task_type: classification, num_classes: 7}
+  NurVid:     {task_type: classification, num_classes: 51}
+  IndustReal: {task_type: classification, num_classes: 75}
+  MammAlps:   {task_type: classification, num_classes: 11}
+  scannetv2:  {task_type: depth_estimation}
+  vspw_v2:    {task_type: semantic_segmentation}
+
+sweep:
+  lr:
+    classification: [1.0e-4, 2.5e-4, 5.0e-4, 1.0e-3]
+    depth_estimation: [5.0e-4, 1.0e-3, 2.5e-3, 5.0e-3]
+    semantic_segmentation: [5.0e-4, 1.0e-3, 2.5e-3, 5.0e-3]
+  peft_rank: [64, 128, 256]          # AdaptFormer, ST-Adapter, LoRA, DoRA
+  n_prompt_tokens: [16, 64, 256]     # VPT, VFPT, BPT
+
+# Table 3 
+table3:
+  full_finetune:
+    common: {peft_type: full_finetune, probe_pooler_type: linear}
+    CAER:       {lr: 1.0e-4}
+    NurVid:     {lr: 1.0e-4}
+    IndustReal: {lr: 1.0e-4}
+    MammAlps:   {lr: 1.0e-4}
+    scannetv2:  {lr: 5.0e-4, depth_patch_size: 14, depth_tubelet_size: 1}
+    vspw_v2:    {lr: 5.0e-4, depth_patch_size: 14, depth_tubelet_size: 1}
+
+  attentive_probe:
+    # frozen backbone, attentive probe only (no PEFT)
+    common: {}
+    CAER:       {lr: 2.5e-4}
+    NurVid:     {lr: 5.0e-4}
+    IndustReal: {lr: 5.0e-4}
+    MammAlps:   {lr: 5.0e-4}
+    scannetv2:  {lr: 2.5e-3}
+    vspw_v2:    {lr: 2.5e-3}
+
+  bitfit:
+    common: {peft_type: bitfit}
+    CAER:       {lr: 2.5e-4}
+    NurVid:     {lr: 5.0e-4}
+    IndustReal: {lr: 2.5e-4}
+    MammAlps:   {lr: 1.0e-3}
+    scannetv2:  {lr: 2.5e-3}
+    vspw_v2:    {lr: 2.5e-3}
+
+  layernorm:
+    common: {peft_type: layernorm}
+    CAER:       {lr: 1.0e-4}
+    NurVid:     {lr: 5.0e-4}
+    IndustReal: {lr: 5.0e-4}
+    MammAlps:   {lr: 5.0e-4}
+    scannetv2:  {lr: 2.5e-3}
+    vspw_v2:    {lr: 2.5e-3}
+
+  ssf:
+    common: {peft_type: ssf}
+    CAER:       {lr: 2.5e-4}
+    NurVid:     {lr: 2.5e-4}
+    IndustReal: {lr: 5.0e-4}
+    MammAlps:   {lr: 1.0e-4}
+    scannetv2:  {lr: 2.5e-3}
+    vspw_v2:    {lr: 2.5e-3}
+
+  vpt:
+    common: {peft_type: vpt_deep}
+    CAER:       {lr: 2.5e-4, n_prompt_tokens: 16}
+    NurVid:     {lr: 5.0e-4, n_prompt_tokens: 64}
+    IndustReal: {lr: 5.0e-4, n_prompt_tokens: 256}
+    MammAlps:   {lr: 5.0e-4, n_prompt_tokens: 16}
+    scannetv2:  {lr: 2.5e-3, n_prompt_tokens: 256}
+    vspw_v2:    {lr: 2.5e-3, n_prompt_tokens: 64}
+
+  vfpt:
+    common: {peft_type: vfpt_deep, prompt_fourier_ratio: 0.5}
+    CAER:       {lr: 2.5e-4, n_prompt_tokens: 16}
+    NurVid:     {lr: 5.0e-4, n_prompt_tokens: 64}
+    IndustReal: {lr: 2.5e-4, n_prompt_tokens: 256}
+    MammAlps:   {lr: 1.0e-3, n_prompt_tokens: 256}
+    scannetv2:  {lr: 2.5e-3, n_prompt_tokens: 256}
+    vspw_v2:    {lr: 2.5e-3, n_prompt_tokens: 64}
+
+  bpt:
+    common: {peft_type: bpt_deep, bpt_rank: 100}
+    CAER:       {lr: 1.0e-4, n_prompt_tokens: 256}
+    NurVid:     {lr: 2.5e-4, n_prompt_tokens: 16}
+    IndustReal: {lr: 1.0e-3, n_prompt_tokens: 64}
+    MammAlps:   {lr: 1.0e-3, n_prompt_tokens: 16}
+    scannetv2:  {lr: 2.5e-3, n_prompt_tokens: 256}
+    vspw_v2:    {lr: 2.5e-3, n_prompt_tokens: 256}
+
+  adaptformer:
+    common: {peft_type: adaptformer_adapter}
+    CAER:       {lr: 2.5e-4, peft_rank: 128}
+    NurVid:     {lr: 5.0e-4, peft_rank: 128}
+    IndustReal: {lr: 1.0e-3, peft_rank: 256}
+    MammAlps:   {lr: 1.0e-3, peft_rank: 256}
+    scannetv2:  {lr: 2.5e-3, peft_rank: 256}
+    vspw_v2:    {lr: 2.5e-3, peft_rank: 256}
+
+  st_adapter:
+    common: {peft_type: st-adapter}
+    CAER:       {lr: 2.5e-4, peft_rank: 256}
+    NurVid:     {lr: 1.0e-3, peft_rank: 256}
+    IndustReal: {lr: 5.0e-4, peft_rank: 128}
+    MammAlps:   {lr: 5.0e-4, peft_rank: 256}
+    scannetv2:  {lr: 2.5e-3, peft_rank: 128}
+    vspw_v2:    {lr: 2.5e-3, peft_rank: 64}
+
+  lora:
+    common: {peft_type: lora, peft_dropout: 0.1}
+    CAER:       {lr: 2.5e-4, peft_rank: 128}
+    NurVid:     {lr: 2.5e-4, peft_rank: 64}
+    IndustReal: {lr: 5.0e-4, peft_rank: 256}
+    MammAlps:   {lr: 1.0e-3, peft_rank: 64}
+    scannetv2:  {lr: 5.0e-4, peft_rank: 128}
+    vspw_v2:    {lr: 1.0e-3, peft_rank: 64}
+
+  dora:
+    common: {peft_type: dora, peft_dropout: 0.1}
+    CAER:       {lr: 1.0e-4, peft_rank: 256}
+    NurVid:     {lr: 5.0e-4, peft_rank: 128}
+    IndustReal: {lr: 5.0e-4, peft_rank: 256}
+    MammAlps:   {lr: 2.5e-4, peft_rank: 128}
+    scannetv2:  {lr: 5.0e-4, peft_rank: 128}
+    vspw_v2:    {lr: 1.0e-3, peft_rank: 64}
+
+# Figure 2 
+figure2:
+  linear:
+    common: {probe_pooler_type: linear}
+    CAER:       {lr: 1.0e-3}
+    NurVid:     {lr: 5.0e-4}
+    IndustReal: {lr: 1.0e-3}
+    MammAlps:   {lr: 5.0e-4}
+    scannetv2:  {lr: 5.0e-3, depth_patch_size: 14, depth_tubelet_size: 1}
+    vspw_v2:    {lr: 1.0e-3, depth_patch_size: 14, depth_tubelet_size: 1}
+
+  efficient:
+    # not applicable to dense prediction
+    common: {probe_pooler_type: efficient}
+    CAER:       {lr: 1.0e-3}
+    NurVid:     {lr: 5.0e-4}
+    IndustReal: {lr: 1.0e-3}
+    MammAlps:   {lr: 5.0e-4}
+
+  dist:
+    common: {probe_pooler_type: dist}
+    CAER:       {lr: 1.0e-4}
+    NurVid:     {lr: 1.0e-3}
+    IndustReal: {lr: 5.0e-4}
+    MammAlps:   {lr: 2.5e-4}
+    scannetv2:  {lr: 1.0e-3}
+    vspw_v2:    {lr: 1.0e-3}
+
+  dpt:
+    common: {probe_pooler_type: dpt}
+    CAER:       {lr: 1.0e-4}
+    NurVid:     {lr: 2.5e-4}
+    IndustReal: {lr: 2.5e-4}
+    MammAlps:   {lr: 5.0e-4}
+    scannetv2:  {lr: 1.0e-4}
+    vspw_v2:    {lr: 5.0e-4}
+
+  vda:
+    common: {probe_pooler_type: vda}
+    CAER:       {lr: 2.5e-4}
+    NurVid:     {lr: 2.5e-4}
+    IndustReal: {lr: 5.0e-4}
+    MammAlps:   {lr: 2.5e-4}
+    scannetv2:  {lr: 5.0e-4}
+    vspw_v2:    {lr: 5.0e-4}
+
+  best_probe_peft:
+    # best task-specific probe (when it is not the attentive probe) + best PEFT of that dataset
+    common: {}
+    IndustReal: {probe_pooler_type: dist, peft_type: lora, peft_rank: 256, peft_dropout: 0.1, lr: 5.0e-4}
+    MammAlps:   {probe_pooler_type: dist, peft_type: adaptformer_adapter, peft_rank: 256, lr: 1.0e-3}
+    scannetv2:  {probe_pooler_type: dpt, peft_type: ssf, lr: 2.5e-4}
+    vspw_v2:    {probe_pooler_type: dist, peft_type: adaptformer_adapter, peft_rank: 256, lr: 1.0e-3}
+
+  per_frame_attentive_peft:
+    # per-frame attentive probe (each frame's queries only attend to that frame) + best PEFT
+    common: {probe_clip_len: 1, depth_tubelet_size: 1}
+    scannetv2:  {peft_type: ssf, lr: 2.5e-3}
+    vspw_v2:    {peft_type: adaptformer_adapter, peft_rank: 256, lr: 2.5e-3}

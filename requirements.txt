@@ -1,0 +1,20 @@
+# Versions used for the paper (Python 3.10, CUDA 12.6). Install PyTorch first, matching your CUDA version:
+#   pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu126
+# The full list of packages in the reference environment is in docs/INSTALL.md.
+torchcodec==0.2.1
+lightning==2.6.1
+timm==1.0.24
+transformers==5.0.0
+safetensors==0.7.0
+huggingface_hub==1.3.7
+einops==0.8.2
+numpy==2.2.6
+pandas==2.3.3
+pillow==12.0.0
+opencv-python==4.13.0.90
+matplotlib==3.10.8
+h5py==3.16.0
+hdf5plugin==6.0.0
+PyYAML==6.0.3
+wandb==0.24.1
+psutil==7.2.2

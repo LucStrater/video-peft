@@ -1,0 +1,39 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+.venv/
+env/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Build and Distribution
+dist/
+build/
+*.egg
+
+# Logs and Temporary Files
+*.log
+tmp/
+
+# Configuration Files
+config.yaml
+
+# Runs, data and checkpoints
+data/
+checkpoints/
+logs/*
+!logs/.gitkeep
+output/
+slurm/
+wandb/
+lightning_logs/

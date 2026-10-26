@@ -1,0 +1,92 @@
+# Default settings for semantic segmentation (VSPW).
+# Every key can be overridden on the command line, e.g. `--lr 0.0005`.
+# Per-method / per-dataset settings for Table 3 and Figure 2 live in config/hparams.yaml.
+
+# basic
+state_type: train_model
+run_type: probe
+task_type: semantic_segmentation
+seed: 0
+deterministic: true
+
+# model
+model_type: internvideo_next
+model_size: base
+
+# data
+data_dir: ./data
+output_dir: ./output
+annotation_type: json
+video_format: mov
+batch_size: 16           # per GPU
+global_batch_size: 32    # lr is scaled by batch_size * num_gpus / global_batch_size
+test_batch_size: 16
+num_workers: 8
+clip_len: 8
+num_crops: 1
+test_num_crops: 1        # single center crop
+num_clips: 1
+test_num_clips: 1
+input_size: 224
+short_side_size: 256
+frame_sampling_method: dense_sampling
+sampling_rate: 1
+
+# dense prediction head: the attentive probe predicts one
+# depth_tubelet_size x depth_patch_size x depth_patch_size output tubelet per query
+depth_patch_size: 8
+depth_tubelet_size: 2
+num_classes: 124
+seg_void_label: 255
+
+# logging
+log_every_n_steps: 5
+check_val_every_n_epoch: 1
+val_check_interval: 32
+wandb_project: video-peft
+wandb_name: default
+wandb_mode: online       # online | offline | disabled
+
+# probe
+probe_pooler_type: attentive
+probe_depth: 1
+probe_use_rope: true
+probe_add_pos_embed: false
+probe_drop_path_rate: 0.1
+
+# optimization
+max_steps: 4000
+lr: 0.0025
+weight_decay: 0.01
+warmup_steps: 400
+warmup_factor: 0.1
+min_lr: 0.0
+optimizer_beta_1: 0.9
+optimizer_beta_2: 0.999
+optimizer_epsilon: 1e-8
+
+# augmentation (only random resized cropping)
+num_samples: 1
+sample_strategy: none
+horizontal_flip: false
+auto_augment: false
+motion_shift: false
+reprob: 0.0
+min_scale: 0.3
+max_scale: 1.0
+min_aspect_ratio: 0.75
+max_aspect_ratio: 1.333333
+
+# mixup (disabled)
+mixup_enabled: false
+mixup: 0.8
+cutmix: 1.0
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: batch
+smoothing: 0.1
+
+# efficiency
+compile_model: false
+fp16: false
+run_profiling: false

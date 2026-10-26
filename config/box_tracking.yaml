@@ -1,0 +1,91 @@
+# Default settings for box tracking (e.g. Waymo Open, CholecTrack20).
+# Frames are resized and center-cropped to input_size without augmentation, so store the videos
+# square (see docs/DATASET.md).
+# Every key can be overridden on the command line, e.g. `--lr 0.0005`.
+
+# basic
+state_type: train_model
+run_type: probe
+task_type: box_tracking
+seed: 0
+deterministic: true
+
+# model
+model_type: internvideo_next
+model_size: base
+
+# data
+data_dir: ./data
+output_dir: ./output
+annotation_type: json
+video_format: mov
+batch_size: 16           # per GPU
+global_batch_size: 32    # lr is scaled by batch_size * num_gpus / global_batch_size
+test_batch_size: 16
+num_workers: 8
+clip_len: 16
+num_crops: 1
+test_num_crops: 1        # single center crop
+num_clips: 1
+test_num_clips: 1
+input_size: 224
+short_side_size: 256
+frame_sampling_method: dense_sampling
+sampling_rate: 1
+
+# tracking: one query per track that is visible at the query frame (largest boxes first)
+max_queries: 25            # Waymo Open: 25, CholecTrack20: 1
+box_area_frac: 0.005       # minimum box area at the query frame, as a fraction of the frame
+box_min_visible_frac: 0.7  # fraction of the clip a track must be present to be queried
+
+# logging
+log_every_n_steps: 5
+check_val_every_n_epoch: 1
+val_check_interval: 32
+wandb_project: video-peft
+wandb_name: default
+wandb_mode: online       # online | offline | disabled
+
+# probe
+probe_pooler_type: attentive
+probe_depth: 1
+probe_use_rope: true
+probe_add_pos_embed: false  # set true for image backbones (DINOv3, SigLIP2), which have no temporal position embedding
+probe_drop_path_rate: 0.1
+
+# optimization
+max_steps: 4000
+lr: 0.001
+weight_decay: 0.01
+warmup_steps: 400
+warmup_factor: 0.1
+min_lr: 0.0
+optimizer_beta_1: 0.9
+optimizer_beta_2: 0.999
+optimizer_epsilon: 1e-8
+
+# augmentation (disabled for box tracking)
+num_samples: 1
+sample_strategy: none
+horizontal_flip: false
+auto_augment: false
+motion_shift: false
+reprob: 0.0
+min_scale: 0.3
+max_scale: 1.0
+min_aspect_ratio: 0.75
+max_aspect_ratio: 1.333333
+
+# mixup (disabled)
+mixup_enabled: false
+mixup: 0.8
+cutmix: 1.0
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: batch
+smoothing: 0.1
+
+# efficiency
+compile_model: false
+fp16: false
+run_profiling: false
