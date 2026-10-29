@@ -92,6 +92,15 @@ paper). The temporal context experiments (Sections 5.4, 5.5) use 16 input frames
 
 ## Pretrained checkpoints
 
+The original pretrained weights of the four backbones can be downloaded from:
+
+| Backbone | Download |
+|---|---|
+| InternVideo-Next | [Hugging Face (OpenGVLab)](https://huggingface.co/collections/OpenGVLab/internvideo-next) |
+| VJEPA2 | [Hugging Face (Meta)](https://huggingface.co/collections/facebook/v-jepa-2) |
+| DINOv3 | [Meta AI](https://ai.meta.com/resources/models-and-libraries/dinov3-downloads/) |
+| SigLIP2 | [Hugging Face (Google)](https://huggingface.co/collections/google/siglip2) |
+
 The first run converts the original pretrained weights (`--checkpoint_url`, a local file) into a checkpoint for
 this codebase (`--checkpoint_path`), and later runs load the converted checkpoint directly. Run one job first
 (or `sbatch --array=0 ...`) so that parallel seeds do not convert the weights simultaneously. Finetuned
